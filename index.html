@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lokesh Singh — Internal Probation Review</title>
+<style>
+  :root{
+    --bg:#191919;--panel:#1F1F1F;--panel-alt:#232323;--border:#2E2E2E;
+    --text:#E9E9E7;--muted:#9B9B9B;--muted-2:#7A7A7A;
+    --amber:#E3A46B;--amber-soft:rgba(227,164,107,0.10);--amber-border:rgba(227,164,107,0.28);
+    --teal:#6FBFA0;--teal-soft:rgba(111,191,160,0.10);--teal-border:rgba(111,191,160,0.28);
+    --red:#E38080;--red-soft:rgba(227,128,128,0.10);--red-border:rgba(227,128,128,0.30);
+    --blue:#7EB6D9;--blue-soft:rgba(126,182,217,0.10);--blue-border:rgba(126,182,217,0.28);
+    --track:#2A2A2A;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:16.5px;line-height:1.58;-webkit-font-smoothing:antialiased;}
+  .mono{font-family:'IBM Plex Mono','SF Mono',ui-monospace,monospace;}
+  .wrap{max-width:940px;margin:0 auto;padding:0 24px 70px;}
+
+  .banner{background:var(--red-soft);border:1px solid var(--red-border);border-radius:7px;padding:10px 16px;margin-top:24px;font-size:13px;color:var(--red);font-weight:650;text-align:center;}
+  h1{font-size:29px;font-weight:700;margin:20px 0 5px;color:#FBFBFA;}
+  .subtitle{color:var(--muted);font-size:14.5px;margin:0 0 20px;}
+
+  .dash{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 28px;}
+  .dstat{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:15px;text-align:center;}
+  .dstat .n{font-size:26px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:#FBFBFA;}
+  .dstat .l{font-size:11.5px;color:var(--muted-2);margin-top:4px;line-height:1.3;}
+  @media (max-width:600px){.dash{grid-template-columns:repeat(2,1fr);}}
+
+  details.section{border-top:1px solid var(--border);padding:24px 0;}
+  details.section:first-of-type{border-top:none;}
+  summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:9px;margin-bottom:2px;}
+  summary::-webkit-details-marker{display:none;}
+  summary .arrow{color:var(--muted-2);font-size:13px;transition:transform .15s ease;}
+  details[open]>summary .arrow{transform:rotate(90deg);}
+  summary h2{font-size:19px;font-weight:650;margin:0;color:#FBFBFA;}
+  .lede{color:var(--muted);font-size:14px;margin:7px 0 16px;}
+  h3{font-size:14px;font-weight:650;margin:20px 0 10px;color:var(--muted-2);text-transform:uppercase;letter-spacing:0.04em;}
+  p{margin:0 0 11px;font-size:14.5px;}
+
+  .callout{display:flex;gap:11px;padding:14px 16px;border-radius:7px;margin:12px 0;font-size:14px;background:var(--panel);border:1px solid var(--border);}
+  .callout .ic{flex-shrink:0;font-size:16px;}
+  .callout p{margin:0;}
+  .callout.blue{background:var(--blue-soft);border-color:var(--blue-border);}
+  .callout strong{color:#FBFBFA;}
+
+  .bigchart{border:1px solid var(--border);border-radius:8px;padding:18px;background:var(--panel);margin:12px 0;}
+  .bc-row{display:grid;grid-template-columns:140px 1fr 32px;align-items:center;gap:10px;margin-bottom:9px;}
+  .bc-row:last-child{margin-bottom:0;}
+  .bc-label{font-size:12.5px;color:var(--muted);}
+  .bc-label b{color:var(--text);display:block;font-size:13px;}
+  .bc-track{height:15px;background:var(--track);border-radius:3px;overflow:hidden;}
+  .bc-fill{height:100%;border-radius:3px;}
+  .bc-num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);text-align:right;}
+  .bc-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;font-size:12px;color:var(--muted-2);}
+  .bc-legend span{display:inline-flex;align-items:center;gap:5px;}
+  .sw{width:8px;height:8px;border-radius:2px;}
+
+  .metricgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0;}
+  .metric{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:13px 15px;}
+  .metric .label{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:8px;}
+  .metric .nums{display:flex;align-items:baseline;gap:8px;}
+  .metric .then{font-size:15px;color:var(--muted-2);font-family:'IBM Plex Mono',monospace;}
+  .metric .arrow{color:var(--muted-2);}
+  .metric .now{font-size:23px;font-weight:700;font-family:'IBM Plex Mono',monospace;}
+  .metric.ok{border-color:var(--teal-border);} .metric.ok .now{color:var(--teal);}
+  .metric.warn{border-color:var(--amber-border);} .metric.warn .now{color:var(--amber);}
+  @media (max-width:600px){.metricgrid{grid-template-columns:1fr;}}
+
+  /* Ryan category — now expandable */
+  .catlist{display:flex;flex-direction:column;margin:12px 0;border:1px solid var(--border);border-radius:7px;overflow:hidden;}
+  .cat-details{border-bottom:1px solid var(--border);background:var(--panel);}
+  .cat-details:last-child{border-bottom:none;}
+  .cat-details summary{display:grid !important;grid-template-columns:16px 1fr 90px 30px;align-items:center;gap:10px;padding:9px 15px;margin-bottom:0 !important;}
+  .cat-details summary .cat-arrow{color:var(--muted-2);font-size:11px;transition:transform .15s ease;}
+  .cat-details[open] summary .cat-arrow{transform:rotate(90deg);}
+  .cat-name{font-size:13px;display:flex;align-items:center;}
+  .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;display:inline-block;margin-right:8px;}
+  .cat-track{height:7px;background:var(--track);border-radius:3px;overflow:hidden;}
+  .cat-fill{height:100%;border-radius:3px;}
+  .cat-num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);text-align:right;}
+  .cat-examples{padding:2px 15px 13px 41px;background:var(--panel-alt);}
+  .cat-examples ul{margin:0;padding-left:16px;}
+  .cat-examples li{font-size:12.5px;color:var(--muted);font-style:italic;margin-bottom:7px;line-height:1.5;}
+  .cat-examples li:last-child{margin-bottom:0;}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:10px 0 0;font-size:12.5px;color:var(--muted-2);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+
+  /* Calendar — Mon–Fri, bigger */
+  .cal-month{margin-bottom:26px;}
+  .cal-month:last-child{margin-bottom:0;}
+  .cal-month-title{font-size:15px;font-weight:650;color:#FBFBFA;margin-bottom:11px;}
+  .cal-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;}
+  .cal-dow{font-size:11.5px;color:var(--muted-2);text-align:center;padding-bottom:3px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.03em;}
+  .cal-day{min-height:96px;background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:8px 9px;position:relative;}
+  .cal-day.empty{background:transparent;border:none;}
+  .cal-day .num{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--muted-2);}
+  .cal-evt{display:block;font-size:11.5px;line-height:1.3;margin-top:5px;padding:3px 6px;border-radius:4px;font-weight:600;cursor:help;position:relative;}
+  .cal-evt[data-tip]:hover::after{
+    content:attr(data-tip);
+    position:absolute;
+    bottom:calc(100% + 8px);
+    left:50%;
+    transform:translateX(-50%);
+    width:240px;
+    max-width:60vw;
+    background:#0E0E0E;
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:7px;
+    padding:10px 12px;
+    font-size:12px;
+    font-weight:400;
+    font-style:normal;
+    line-height:1.45;
+    white-space:normal;
+    z-index:50;
+    box-shadow:0 8px 24px rgba(0,0,0,0.5);
+    pointer-events:none;
+  }
+  .cal-evt[data-tip]:hover::before{
+    content:"";
+    position:absolute;
+    bottom:calc(100% + 2px);
+    left:50%;
+    transform:translateX(-50%);
+    border:6px solid transparent;
+    border-top-color:#0E0E0E;
+    z-index:50;
+    pointer-events:none;
+  }
+  .cal-day{overflow:visible;}
+  .cal-grid{overflow:visible;}
+  .cal-evt.blue{background:var(--blue-soft);color:var(--blue);}
+  .cal-evt.teal{background:var(--teal-soft);color:var(--teal);}
+  .cal-evt.amber{background:var(--amber-soft);color:var(--amber);}
+  .cal-evt.red{background:var(--red-soft);color:var(--red);}
+  .cal-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px;font-size:12.5px;color:var(--muted-2);}
+  .cal-legend span{display:inline-flex;align-items:center;gap:6px;}
+  .sw2{width:9px;height:9px;border-radius:2px;}
+
+  /* Slack behavior — outcome big, quote small */
+  .behlist{display:flex;flex-direction:column;gap:11px;margin:12px 0;}
+  .beh-row{display:flex;gap:13px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:13px 15px;align-items:flex-start;}
+  .beh-row.good{border-color:var(--teal-border);background:var(--teal-soft);}
+  .beh-row.warn{border-color:var(--amber-border);background:var(--amber-soft);}
+  .beh-date{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--muted-2);flex-shrink:0;width:56px;padding-top:2px;}
+  .beh-body b{display:block;font-size:16px;color:var(--text);margin-bottom:4px;font-weight:650;}
+  .beh-body span{font-size:12px;color:var(--muted-2);font-style:italic;}
+
+  .score{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0;}
+  .score-col{border-radius:8px;padding:15px;}
+  .score-col.good{background:var(--teal-soft);border:1px solid var(--teal-border);}
+  .score-col.risk{background:var(--red-soft);border:1px solid var(--red-border);}
+  .score-col h4{margin:0 0 11px;font-size:13px;text-transform:uppercase;letter-spacing:0.04em;}
+  .score-col.good h4{color:var(--teal);}
+  .score-col.risk h4{color:var(--red);}
+  .score-col ul{margin:0;padding-left:17px;}
+  .score-col li{font-size:13.5px;margin-bottom:10px;line-height:1.45;}
+  .score-col li em{display:block;color:var(--muted-2);font-size:12px;font-style:italic;margin-top:2px;}
+  @media (max-width:600px){.score{grid-template-columns:1fr;}}
+
+  .decision{background:var(--teal-soft);border:2px solid var(--teal-border);border-radius:10px;padding:20px;margin:16px 0;}
+  .decision .tag{display:inline-block;background:var(--teal);color:#152420;font-weight:700;font-size:12px;padding:3px 10px;border-radius:5px;margin-bottom:10px;letter-spacing:0.03em;}
+  .decision p{margin:0 0 8px;font-size:14.5px;}
+  .decision p:last-child{margin-bottom:0;}
+
+  .footnote{font-size:12px;color:var(--muted-2);margin-top:6px;}
+  footer{padding:26px 0 10px;color:var(--muted-2);font-size:12px;border-top:1px solid var(--border);margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="banner">🔒 INTERNAL — Sanket &amp; Saf only. Not for Lokesh or any editor-facing channel.</div>
+  <h1>Lokesh Singh — Probation Review</h1>
+  <p class="subtitle">Technical trajectory, delivery calendar, and Slack behavior. Employee Equity (Ryan Deiss) is his last probation video.</p>
+
+  <div class="dash">
+    <div class="dstat"><div class="n">63</div><div class="l">days on probation<br>(Jun 15 → Aug 17)</div></div>
+    <div class="dstat"><div class="n">6</div><div class="l">projects across<br>4 clients</div></div>
+    <div class="dstat"><div class="n">393</div><div class="l">Frame.io comments<br>verified from raw exports</div></div>
+    <div class="dstat"><div class="n">0</div><div class="l">deadlines missed<br>without advance notice</div></div>
+  </div>
+
+  <details class="section" open>
+    <summary><span class="arrow">▸</span><h2>Technical Trajectory</h2></summary>
+    <p class="lede">All drafts, all projects, one chart — verified directly from raw Frame.io exports.</p>
+
+    <div class="bigchart">
+      <div class="bc-row"><div class="bc-label"><b>Daniel V1</b>first video, first week</div><div class="bc-track"><div class="bc-fill" style="width:99%;background:var(--amber)"></div></div><div class="bc-num">80</div></div>
+      <div class="bc-row"><div class="bc-label"><b>Daniel V3</b></div><div class="bc-track"><div class="bc-fill" style="width:100%;background:var(--amber)"></div></div><div class="bc-num">81</div></div>
+      <div class="bc-row"><div class="bc-label"><b>Daniel V4</b></div><div class="bc-track"><div class="bc-fill" style="width:30%;background:var(--amber)"></div></div><div class="bc-num">24</div></div>
+      <div class="bc-row"><div class="bc-label"><b>Sequoia V1</b></div><div class="bc-track"><div class="bc-fill" style="width:80%;background:var(--teal)"></div></div><div class="bc-num">65</div></div>
+      <div class="bc-row"><div class="bc-label"><b>Sequoia V2</b></div><div class="bc-track"><div class="bc-fill" style="width:43%;background:var(--teal)"></div></div><div class="bc-num">35</div></div>
+      <div class="bc-row"><div class="bc-label"><b>Sequoia V3</b></div><div class="bc-track"><div class="bc-fill" style="width:28%;background:var(--teal)"></div></div><div class="bc-num">23</div></div>
+      <div class="bc-row"><div class="bc-label"><b>Ari V1</b></div><div class="bc-track"><div class="bc-fill" style="width:12%;background:var(--teal)"></div></div><div class="bc-num">10</div></div>
+      <div class="bc-row"><div class="bc-label"><b>Ryan V1</b>last probation video</div><div class="bc-track"><div class="bc-fill" style="width:93%;background:var(--red)"></div></div><div class="bc-num">75</div></div>
+      <div class="bc-legend">
+        <span><span class="sw" style="background:var(--amber)"></span>Daniel (long-form)</span>
+        <span><span class="sw" style="background:var(--teal)"></span>Sequoia/Ari (VSL)</span>
+        <span><span class="sw" style="background:var(--red)"></span>Ryan (long-form)</span>
+      </div>
+    </div>
+
+    <h3>Fully resolved</h3>
+    <div class="metricgrid">
+      <div class="metric ok"><div class="label">Grammar / spelling</div><div class="nums"><span class="then">~27</span><span class="arrow">→</span><span class="now">1</span></div></div>
+      <div class="metric ok"><div class="label">Heading hierarchy</div><div class="nums"><span class="then">4</span><span class="arrow">→</span><span class="now">0</span></div></div>
+      <div class="metric ok"><div class="label">Palette defaults</div><div class="nums"><span class="then">6</span><span class="arrow">→</span><span class="now">0</span></div></div>
+      <div class="metric ok"><div class="label">Frame glitches</div><div class="nums"><span class="then">6</span><span class="arrow">→</span><span class="now">1</span></div></div>
+    </div>
+
+    <h3>Hasn't moved</h3>
+    <div class="metricgrid">
+      <div class="metric warn"><div class="label">Line spacing</div><div class="nums"><span class="then">12</span><span class="arrow">→</span><span class="now">6</span></div></div>
+      <div class="metric warn"><div class="label">Content accuracy</div><div class="nums"><span class="now" style="font-size:16px;">flat</span></div></div>
+    </div>
+    <p class="footnote">Line spacing is proportionally <em>higher</em> on Ryan's video (6 in one draft vs. 12 across 4 prior drafts) despite being named in writing 3 separate times.</p>
+  </details>
+
+  <details class="section" open>
+    <summary><span class="arrow">▸</span><h2>Ryan's Video — Comment Types</h2></summary>
+    <p class="lede">Latest video only, not blended with historical data. Click any row for examples.</p>
+
+    <div class="catlist">
+      <details class="cat-details">
+        <summary><span class="cat-arrow">▸</span><div class="cat-name"><span class="dot" style="background:var(--teal)"></span>Concept &amp; structure elevation</div><div class="cat-track"><div class="cat-fill" style="width:100%;background:var(--teal)"></div></div><div class="cat-num">15</div></summary>
+        <div class="cat-examples"><ul>
+          <li>"When numbers go back, let's add a rewind sound so it's clear that we are rewinding back to the reality"</li>
+          <li>"Instead of making the years 0 for losing them, we can keep the same years as before but add a stamp on top called 'Resigned'... losing someone doesn't mean the years go to 0, it means they resigned with their experience"</li>
+          <li>"instead of big chunk of text let's do this: Entrepreneurs — Risk, Upside / Employees — Salary, 0 Risk"</li>
+          <li>"This was the pointer 1 which Ryan said he would touch later, so let's show that animation here again"</li>
+        </ul></div>
+      </details>
+      <details class="cat-details">
+        <summary><span class="cat-arrow">▸</span><div class="cat-name"><span class="dot" style="background:var(--teal)"></span>On-screen copy Sanket wrote himself</div><div class="cat-track"><div class="cat-fill" style="width:60%;background:var(--teal)"></div></div><div class="cat-num">9</div></summary>
+        <div class="cat-examples"><ul>
+          <li>"Great at his job | Super smart, super hard worker | Most valuable person in the company"</li>
+          <li>"When you bring money to the table, you also bring the risk. The discount honors the talent."</li>
+          <li>"How Downside Shows Up | A buy-in | A compensation reduction | A skipped distribution"</li>
+        </ul></div>
+      </details>
+      <details class="cat-details">
+        <summary><span class="cat-arrow">▸</span><div class="cat-name"><span class="dot" style="background:var(--teal)"></span>Motion, zoom &amp; timing</div><div class="cat-track"><div class="cat-fill" style="width:53%;background:var(--teal)"></div></div><div class="cat-num">8</div></summary>
+        <div class="cat-examples"><ul>
+          <li>"...right now it's slightly distracting with so much motion & weird positioning"</li>
+          <li>"Instead of zoom out, let's do a jump cut zoom in here"</li>
+          <li>"Not the biggest fan of this abrupt zoom in & the radial blur, let's do a keyframe zoom in"</li>
+        </ul></div>
+      </details>
+      <details class="cat-details">
+        <summary><span class="cat-arrow">▸</span><div class="cat-name"><span class="dot" style="background:var(--blue)"></span>B-roll &amp; AI realism <span style="color:var(--muted-2);font-size:11.5px;">(first use)</span></div><div class="cat-track"><div class="cat-fill" style="width:47%;background:var(--blue)"></div></div><div class="cat-num">7</div></summary>
+        <div class="cat-examples"><ul>
+          <li>"Not happy with the AI broll here, doesn't look as realistic as the usual Ryan brolls. Please connect with Anirba to understand the process"</li>
+          <li>"The creative direction for this broll can be better because this looks very flat and the person doesn't look like Ryan"</li>
+          <li>"composition for the ai broll is good, need to make the face more accurate"</li>
+        </ul></div>
+      </details>
+      <details class="cat-details">
+        <summary><span class="cat-arrow">▸</span><div class="cat-name"><span class="dot" style="background:var(--red)"></span>Content accuracy vs. dialogue</div><div class="cat-track"><div class="cat-fill" style="width:40%;background:var(--red)"></div></div><div class="cat-num">6</div></summary>
+        <div class="cat-examples"><ul>
+          <li>"Profits Only Interest (instead of Profit Sharing)"</li>
+          <li>"365 days doesnt make sense here, let's say Day 01 & show 0%"</li>
+          <li>"4 instead of 3 in heading"</li>
+        </ul></div>
+      </details>
+      <details class="cat-details">
+        <summary><span class="cat-arrow">▸</span><div class="cat-name"><span class="dot" style="background:var(--red)"></span>Line spacing</div><div class="cat-track"><div class="cat-fill" style="width:40%;background:var(--red)"></div></div><div class="cat-num">6</div></summary>
+        <div class="cat-examples"><ul>
+          <li>"let's increase the line spacing slightly here, letter spacing too very slightly"</li>
+          <li>"make both the text size similar, also increase line spacing"</li>
+          <li>"line spacing increase please"</li>
+        </ul></div>
+      </details>
+      <details class="cat-details">
+        <summary><span class="cat-arrow">▸</span><div class="cat-name"><span class="dot" style="background:var(--amber)"></span>Sizing adjustments</div><div class="cat-track"><div class="cat-fill" style="width:27%;background:var(--amber)"></div></div><div class="cat-num">4</div></summary>
+        <div class="cat-examples"><ul>
+          <li>"instead supers size by 10%"</li>
+          <li>"supers too big, reduce size"</li>
+          <li>"It needs to be little bit smaller, this is too small hahahaha"</li>
+        </ul></div>
+      </details>
+      <details class="cat-details">
+        <summary><span class="cat-arrow">▸</span><div class="cat-name"><span class="dot" style="background:var(--amber)"></span>Consistency</div><div class="cat-track"><div class="cat-fill" style="width:20%;background:var(--amber)"></div></div><div class="cat-num">3</div></summary>
+        <div class="cat-examples"><ul>
+          <li>"Same changes as last time"</li>
+          <li>"Let's use the bolder variant of the script font, the one you have used earlier in the calculation animation"</li>
+        </ul></div>
+      </details>
+      <details class="cat-details">
+        <summary><span class="cat-arrow">▸</span><div class="cat-name"><span class="dot" style="background:var(--amber)"></span>Footage &amp; angle direction</div><div class="cat-track"><div class="cat-fill" style="width:20%;background:var(--amber)"></div></div><div class="cat-num">3</div></summary>
+        <div class="cat-examples"><ul>
+          <li>"Let's show Ryan's angle here instead of wide angle"</li>
+          <li>"switch to Bob's angle thinking, slightly stressed"</li>
+        </ul></div>
+      </details>
+      <details class="cat-details">
+        <summary><span class="cat-arrow">▸</span><div class="cat-name"><span class="dot" style="background:var(--amber)"></span>Text legibility / blur</div><div class="cat-track"><div class="cat-fill" style="width:20%;background:var(--amber)"></div></div><div class="cat-num">3</div></summary>
+        <div class="cat-examples"><ul>
+          <li>"The right side text is hard to read. Let's add some dark gradient behind it"</li>
+          <li>"the text is looking blurred, let's fix that"</li>
+        </ul></div>
+      </details>
+      <details class="cat-details">
+        <summary><span class="cat-arrow">▸</span><div class="cat-name"><span class="dot" style="background:var(--teal)"></span>Grammar &amp; case</div><div class="cat-track"><div class="cat-fill" style="width:20%;background:var(--teal)"></div></div><div class="cat-num">3</div></summary>
+        <div class="cat-examples"><ul>
+          <li>"Bob*"</li>
+          <li>"8-Figure Businesses" (case correction)</li>
+          <li>"Partner Buy-Ins | titlecase"</li>
+        </ul></div>
+      </details>
+      <details class="cat-details">
+        <summary><span class="cat-arrow">▸</span><div class="cat-name"><span class="dot" style="background:var(--amber)"></span>Other technical polish</div><div class="cat-track"><div class="cat-fill" style="width:20%;background:var(--amber)"></div></div><div class="cat-num">3</div></summary>
+        <div class="cat-examples"><ul>
+          <li>"Let's connect these lines, instead of weird space in between"</li>
+          <li>"The box proportions are not looking great... it should ideally have more space on left & right"</li>
+          <li>"glitch"</li>
+        </ul></div>
+      </details>
+    </div>
+    <div class="legend">
+      <span><span class="dot" style="background:var(--teal)"></span>Elevation, not correction — 32</span>
+      <span><span class="dot" style="background:var(--blue)"></span>New territory — 7</span>
+      <span><span class="dot" style="background:var(--amber)"></span>Detail-level polish — 31</span>
+    </div>
+  </details>
+
+  <details class="section" open>
+    <summary><span class="arrow">▸</span><h2>Delivery Calendar</h2></summary>
+    <p class="lede">Weekdays only. Hover any tag for what he actually said.</p>
+
+    <div class="cal-month">
+      <div class="cal-month-title">June 2026</div>
+      <div class="cal-grid">
+        <div class="cal-dow">MON</div><div class="cal-dow">TUE</div><div class="cal-dow">WED</div><div class="cal-dow">THU</div><div class="cal-dow">FRI</div>
+        <div class="cal-day"><div class="num">15</div><span class="cal-evt blue" data-tip="Officially joined Talking Heads and the trial channel.">Hired</span></div>
+        <div class="cal-day"><div class="num">16</div></div>
+        <div class="cal-day"><div class="num">17</div><span class="cal-evt blue" data-tip="Gio: “Heeey Lokesh! I have your first task to work on. This is a video for one of our long term clients, Daniel Priestley.” Deadline given as Friday, Jul 26.">Assigned: Daniel</span></div>
+        <div class="cal-day"><div class="num">18</div><span class="cal-evt amber" data-tip="Lokesh: “Hi bro, here again. I think I have confusion now, what is the hook V1 and what is hook V2. It looks like Daniel tried to cover the hook in the starting of the video and then in the last of the video!”">Hook confusion Q</span></div>
+        <div class="cal-day"><div class="num">19</div><span class="cal-evt amber" data-tip="Lokesh: “hi bro, the video is 23 mins long right now. Should I flag this up on the channel that I will be needed 1 more days or should I inform saf for this?”">Flagged delay risk</span></div>
+        <div class="cal-day"><div class="num">22</div></div>
+        <div class="cal-day"><div class="num">23</div></div>
+        <div class="cal-day"><div class="num">24</div>
+          <span class="cal-evt amber" data-tip="Lokesh: “apologies for the late update. I wasn't able to get the video done today despite pushing hard on it. I'll have it delivered tomorrow by 3:00 PM IST. Sorry for the delay!”">Self-flagged slip</span>
+          <span class="cal-evt teal" data-tip="Lokesh: “Sent the video on channel boss! Pretty anxious about the feedback, haha! I hope I have done a good job.”">Delivered V1</span>
+        </div>
+        <div class="cal-day"><div class="num">25</div></div>
+        <div class="cal-day"><div class="num">26</div><span class="cal-evt amber" data-tip="Lokesh: “so, should I send a video with all the changes done except the AI B-rolls or Should I send it on monday including the AI B-rolls!” — a call he had enough context to make himself.">Avoidable Q</span></div>
+        <div class="cal-day"><div class="num">29</div><span class="cal-evt red" data-tip="Lokesh: “hi bro, I really don't know how did I missed this on Friday. Really sorry for that. But can you tell me what clients are you talking about here?”">Missed Fri task</span></div>
+        <div class="cal-day"><div class="num">30</div>
+          <span class="cal-evt red" data-tip="Lokesh: “OMG! this looks horrible man. I have made such a blunder.” followed immediately by “I am really sorry my man.”">Blunder, owned</span>
+          <span class="cal-evt blue" data-tip="Gio: “I have your next assignment ready — first of three VSLs for James Conole (Root Financial). Due: Wednesday, July 8.”">Assigned: Sequoia</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cal-month">
+      <div class="cal-month-title">July 2026</div>
+      <div class="cal-grid">
+        <div class="cal-dow">MON</div><div class="cal-dow">TUE</div><div class="cal-dow">WED</div><div class="cal-dow">THU</div><div class="cal-dow">FRI</div>
+        <div class="cal-day empty"></div><div class="cal-day empty"></div>
+        <div class="cal-day"><div class="num">1</div></div>
+        <div class="cal-day"><div class="num">2</div></div>
+        <div class="cal-day"><div class="num">3</div><span class="cal-evt teal" data-tip="Lokesh: “I use grow effect (default in premiere pro)... I found it more cool as it will reduce the time and friction to get the same speed throughout the video. But as you said, I will move ahead with this.”">Pushback + complied</span></div>
+        <div class="cal-day"><div class="num">6</div><span class="cal-evt amber" data-tip="Lokesh: “Since I have started using Claude, the one problem I am tackling is the exhaustion of tokens. I have used many skills to tackle that, I also used the tips you said in the meeting, but nothing seems working.”">Claude token issue</span></div>
+        <div class="cal-day"><div class="num">7</div></div>
+        <div class="cal-day"><div class="num">8</div><span class="cal-evt teal" data-tip="V1 uploaded 12:42PM — the Wednesday Jul 8 deadline, hit exactly.">Delivered Sequoia V1 — on time</span></div>
+        <div class="cal-day"><div class="num">9</div><span class="cal-evt teal" data-tip="Lokesh: “hi bro, whenever you get some time, will you like to explain in short what actually made you feel like that the recent video isn't looking like a VSL?”">Asked “why”, not “what”</span></div>
+        <div class="cal-day"><div class="num">10</div><span class="cal-evt amber" data-tip="Sanket flagged: “Background changes, pls check.” Lokesh: “I don't see anything wrong here in this one bro. You are talking about the animation bg, right?” — the actual glitch wasn't spotted for 3 more days.">Missed a glitch note</span></div>
+        <div class="cal-day"><div class="num">13</div><span class="cal-evt amber" data-tip="Lokesh: “Sorry to annoy you but have you checked it bro?” — a reasonable follow-up nudge, not a duplicate ask.">Nudge for review</span></div>
+        <div class="cal-day"><div class="num">14</div><span class="cal-evt amber" data-tip="Sanket: “Hey Lokesh, do you wish to come on a huddle for 5 minutes? I assume you are still confused.” Lokesh: “yes sure - really confused.” Resolved within the huddle.">Huddle, resolved fast</span></div>
+        <div class="cal-day"><div class="num">16</div>
+          <span class="cal-evt red" data-tip="Lokesh: “my hard drive where all my project data was stored (including the current one) got damaged. The repair shop has said it should be fixed by tomorrow afternoon.”">Hard drive died</span>
+          <span class="cal-evt amber" data-tip="Lokesh: “I'd really appreciate a one day extension to get everything sorted. I'll make sure to have it wrapped up by this Saturday even if it takes the full day.”">+1 day requested</span>
+        </div>
+        <div class="cal-day"><div class="num">17</div></div>
+        <div class="cal-day"><div class="num">20</div><span class="cal-evt blue" data-tip="Gio: “James just let me know his compliance team will send us a few on screen disclaimers to add to the VSLs... Should be a really easy edit for all VSLs.”">Compliance heads-up</span></div>
+        <div class="cal-day"><div class="num">21</div>
+          <span class="cal-evt blue" data-tip="Sanket: “I've put together a feedback document for you, please go through it and let me know if you have any questions. You're doing a solid job overall and the improvement is really showing.”">Part 1 doc shared</span>
+          <span class="cal-evt blue" data-tip="Najma: “I know you've been working on James' content but we've got a video that needs editing for Vishen so will be good for you to work on.” Deadline: July 30th.">Assigned: Vishen</span>
+        </div>
+        <div class="cal-day"><div class="num">22</div></div>
+        <div class="cal-day"><div class="num">23</div></div>
+        <div class="cal-day"><div class="num">24</div>
+          <span class="cal-evt teal" data-tip="Lokesh: “Uploaded!” — first cut delivered 6 days ahead of the Jul 30 deadline.">Vishen first cut</span>
+          <span class="cal-evt amber" data-tip="Sanket: “From next time onwards can you please mark the hook durations please?” Lokesh: “Sure, I was about to mark them but then took a break for lunch.”">Forgot hook marks</span>
+        </div>
+        <div class="cal-day"><div class="num">27</div></div>
+        <div class="cal-day"><div class="num">28</div></div>
+        <div class="cal-day"><div class="num">29</div></div>
+        <div class="cal-day"><div class="num">30</div><span class="cal-evt red" data-tip="Najma: “this publish date is not flexible at all... I don't want to risk the video possibly being delayed as this client is very strict on timings — so I might have to ask Aaron to pick it up from here.” Not a quality failure on Lokesh's part.">Reassigned to Aaron</span></div>
+        <div class="cal-day"><div class="num">31</div></div>
+      </div>
+    </div>
+
+    <div class="cal-month">
+      <div class="cal-month-title">August 2026 (through the 17th)</div>
+      <div class="cal-grid">
+        <div class="cal-dow">MON</div><div class="cal-dow">TUE</div><div class="cal-dow">WED</div><div class="cal-dow">THU</div><div class="cal-dow">FRI</div>
+        <div class="cal-day"><div class="num">3</div><span class="cal-evt red" data-tip="Sanket: “On the blocker with Saf's images, if I were in your position I would have placed a placeholder, completed the video, shared it for review, and moved on.” Lokesh: “my bad, completely missed that, should've placed a placeholder and kept moving.”">Stalled on blocker</span></div>
+        <div class="cal-day"><div class="num">4</div>
+          <span class="cal-evt blue" data-tip="Gio: “This is a video for Ryan that will go live next week... the payoff of this video is HOW to split business equity with employees or a partner.” Deadline: Wednesday, Aug 12.">Assigned: Ryan</span>
+          <span class="cal-evt amber" data-tip="Lokesh: “that one is also 60-70% complete, will share that soon as well.” Sanket: “No problems, please don't work on Sam Altman reel, it's assigned to another editor.”">Reel mixup</span>
+        </div>
+        <div class="cal-day"><div class="num">5</div><span class="cal-evt blue" data-tip="Sanket: “I've put together a new feedback document covering what we've noticed... I genuinely loved what you did with Saf's shorts, some really unique, innovative choices in there.”">Part 2 doc shared</span></div>
+        <div class="cal-day"><div class="num">6</div>
+          <span class="cal-evt teal" data-tip="Lokesh: “here is the first cut” — shared just 2 days after assignment.">First cut shared</span>
+          <span class="cal-evt teal" data-tip="Lokesh: “the video is 30 mins+. I request a day extension to complete this video. Is that possible?” — sent 6 days before the original deadline. Gio granted to Friday Aug 14.">+2 days requested</span>
+        </div>
+        <div class="cal-day"><div class="num">7</div></div>
+        <div class="cal-day"><div class="num">10</div></div>
+        <div class="cal-day"><div class="num">11</div></div>
+        <div class="cal-day"><div class="num">12</div></div>
+        <div class="cal-day"><div class="num">13</div><span class="cal-evt red" data-tip="Lokesh: “I am feeling very disappointed and very low on myself right now. This being the last video of my probation... I really put in extra time and effort trying to get everything right this time... now I'm worried I might not pass this probation.” Sent the same evening the 75 comments landed.">75 comments + emotional msg</span></div>
+        <div class="cal-day"><div class="num">14</div><span class="cal-evt blue" data-tip="Sanket's written reply covering: comment volume means mistakes OR a vision-alignment gap, not a verdict; and direct feedback that sharing this level of emotional weight at work reads as a confidence gap.">Sanket's coaching reply</span></div>
+        <div class="cal-day"><div class="num">17</div><span class="cal-evt teal" data-tip="Lokesh: “Yes, you're absolutely right that I should learn and do more, no argument there... I'll keep this in mind and try my best to avoid that going forward, and stay focused only on the work.” No defensiveness, no excuses.">Mature reply, resolved</span></div>
+      </div>
+    </div>
+
+    <div class="cal-legend">
+      <span><span class="sw2" style="background:var(--blue)"></span>Assignment / info</span>
+      <span><span class="sw2" style="background:var(--teal)"></span>Delivered / positive</span>
+      <span><span class="sw2" style="background:var(--amber)"></span>Self-flagged / friction</span>
+      <span><span class="sw2" style="background:var(--red)"></span>Concern / mistake</span>
+    </div>
+  </details>
+
+  <details class="section" open>
+    <summary><span class="arrow">▸</span><h2>Slack Behavior</h2></summary>
+    <p class="lede">What it tells us, first. The actual message, small, underneath.</p>
+
+    <div class="behlist">
+      <div class="beh-row good"><div class="beh-date">Jun 24</div><div class="beh-body"><b>Flagged a slip before being asked, hit the revised ETA</b><span>"I'll have it delivered tomorrow by 3:00 PM IST."</span></div></div>
+      <div class="beh-row good"><div class="beh-date">Jun 30</div><div class="beh-body"><b>Owned a mistake immediately, zero hedging</b><span>"OMG! I have made such a blunder."</span></div></div>
+      <div class="beh-row good"><div class="beh-date">Jun 30</div><div class="beh-body"><b>Turned a one-off fix into a reusable system</b><span>"So what I am gonna do is save this as a preset for all the shadows for Daniel."</span></div></div>
+      <div class="beh-row good"><div class="beh-date">Jul 3</div><div class="beh-body"><b>Pushed back with reasoning, complied once explained</b><span>"I found it more cool... but as you said, I will move ahead with this."</span></div></div>
+      <div class="beh-row good"><div class="beh-date">Jul 16</div><div class="beh-body"><b>Genuine emergency, disclosed same day with a firm recovery date</b><span>"My hard drive got damaged... I'll make sure to have it wrapped up by this Saturday."</span></div></div>
+      <div class="beh-row warn"><div class="beh-date">Aug 3</div><div class="beh-body"><b>Stalled on a blocker instead of placeholdering — 2nd time corrected</b><span>"My bad, completely missed that, should've placed a placeholder and kept moving."</span></div></div>
+      <div class="beh-row warn"><div class="beh-date">Aug 4</div><div class="beh-body"><b>Scope confusion — worked on a reel assigned to another editor</b><span>"That one is also 60-70% complete, will share that soon as well."</span></div></div>
+      <div class="beh-row"><div class="beh-date">Aug 13</div><div class="beh-body"><b>Anxiety about probation, disclosed directly rather than hidden</b><span>"I'm worried I might not pass this probation."</span></div></div>
+      <div class="beh-row good"><div class="beh-date">Aug 17</div><div class="beh-body"><b>Took hard, personal feedback with zero defensiveness and adjusted</b><span>"You're absolutely right... I'll keep this in mind and stay focused only on the work."</span></div></div>
+    </div>
+  </details>
+
+  <details class="section" open>
+    <summary><span class="arrow">▸</span><h2>Synthesis</h2></summary>
+    <div class="score">
+      <div class="score-col good">
+        <h4>✓ Strengths</h4>
+        <ul>
+          <li>Conceptualization and creative thinking are genuinely strong<em>Saf's shorts called "unique and innovative"; unprompted "Great chat animation!" on Ryan's video; concept &amp; structure elevation is the single largest comment category on his hardest video yet, ahead of any correction type</em></li>
+          <li>Production quality is consistently high across clients<em>Reels reached "GTG" / "great job" within 1–2 rounds; VSL feedback included "Crazy good!" mid-review</em></li>
+          <li>Grammar, hierarchy, palette, glitches — all resolved, across 4 different clients</li>
+          <li>Every deadline slip/extension self-flagged days in advance, revised dates always hit</li>
+          <li>Responded to hard personal feedback with zero defensiveness</li>
+        </ul>
+      </div>
+      <div class="score-col risk">
+        <h4>⚠ Risks</h4>
+        <ul>
+          <li>Line spacing unmoved despite 3 rounds of written coaching</li>
+          <li>Placeholder-and-move-on principle still needs correcting on repeat</li>
+          <li>AI b-roll realism is a real gap, though first-exposure</li>
+          <li>Pace/timeline consistency is the main friction, not skill<em>Every project so far has been a new client or new format — Vishen's reassignment was about client strictness meeting a context-switch cost, not a quality failure</em></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="decision">
+      <span class="tag">DECISION — SANKET</span>
+      <p><strong>Hire.</strong> The quality of the work is genuinely high, and that's the harder thing to build in an editor. The friction is pace and timeline consistency, not craft.</p>
+      <p>Expect this to improve once he's working with one consistent client instead of a new one every project — he flagged this himself unprompted in his own check-in ("work consistently with the same creator/client... I wouldn't need to constantly build context, collect assets, and learn different creator styles"). Every project to date has required a fresh ramp-up, which is the most expensive version of this job. Give him that consistency and time to level up into it.</p>
+    </div>
+  </details>
+
+  <footer>Sources: raw Frame.io CSV/txt exports for Daniel (V1/V3/V4), Sequoia (V1–V3), Ari (V1), Ryan (V1) — all recounted directly this session. Full Slack history, #trial-editor-lokesh + Sanket/Lokesh DM, Jun 15–Aug 17.</footer>
+
+</div>
+</body>
+</html>
